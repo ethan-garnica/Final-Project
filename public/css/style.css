@@ -1,0 +1,60 @@
+
+.eventContainer{
+    display:flex;
+    justify-content:space-evenly;
+    width:45%;
+    margin:0 auto; 
+}
+
+.eventImg{
+    padding:3%;
+}
+.resultImage{
+  display: block;
+  margin-left:auto;
+  margin-right:auto;
+  width: 50%;
+}
+#homeText{
+  text-align:center;
+  
+}
+.groupResults{
+    display:flex;
+    background:white;
+    border:black solid;
+    justify-content:space-evenly;
+    width:75%;
+    padding:3%;
+    margin:0 auto;
+}
+.searchBox{
+  margin-top:1%;
+}
+
+
+nav{
+  padding:1%;
+  
+}
+
+.bar{
+  color: white;
+  text-decoration: none;
+  margin:7px;
+  padding:5px;
+}
+.bar:hover{
+  background-color: white;
+  color: red;
+  margin:1%;
+  padding:5px;
+}
+a{
+    text-decoration:none;
+    color:black;
+}
+a:hover{
+    text-decoration:none;
+    color:black;
+}
