@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <%- include ("partials/header.ejs")%>
+</head>
+<body>
+    <main>
+        <header class="p-5 bg-danger text-center">
+          <%- include ("partials/menu.ejs")%>
+        </header>
+
+			<form action="/fAdd" method="POST">
+				
+	      Franchise title: <input type="text" name="name"><br>
+				Short Summary: <textarea name="deck"></textarea><br>					
+	      Description: <textarea name="description"></textarea><br>
+				Aliases (one per line): <textarea name="aliases"></textarea><br>
+				Image: <input type="text" name="image"><br><br>
+				
+				
+	    	<button> Add New Franchise </button>
+    
+			</form>
+    </main>
+</body>
+</html>

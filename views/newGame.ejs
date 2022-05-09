@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <%- include ("partials/header.ejs")%>
+</head>
+<body>
+    <main>
+        <header class="p-5 bg-danger text-center">
+          <%- include ("partials/menu.ejs")%>
+        </header>
+
+			<form action="/gAdd" method="POST">
+				
+	      Game title: <input type="text" name="name"><br>
+				Short Summary: <textarea name="deck"></textarea><br>
+					
+	      Description: <textarea name="description"></textarea><br>
+				Release Date: <input type="date" name="original_release_date"><br>
+				Aliases (one per line): <textarea name="aliases"></textarea><br>
+				Image: <input type="text" name="image"><br><br>
+				
+				Platforms: 
+				<input type="checkbox" id="platform1" name="platform" value="Playstation">
+	  		<label for="platform1"> Playstation</label>
+				
+				<input type="checkbox" id="platform2" name="platform" value="Xbox">
+	  		<label for="platform2"> Xbox</label>
+				
+				<input type="checkbox" id="platform3" name="platform" value="Nintendo Switch">
+	  		<label for="platform3"> Nintendo Switch</label>
+				
+				<br>
+				Rating:
+				<select name="rating">
+					<option value=null selected>Select Rating</option>
+					<% for(let i = 0; i <10;i++) {%>
+						<option value=<%=i+1%>><%=i+1%></option>
+					<%}%>
+				</select>
+	    	<button> Add New Game </button>
+    
+			</form>
+    </main>
+</body>
+</html>

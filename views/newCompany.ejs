@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <%- include ("partials/header.ejs")%>
+</head>
+<body>
+    <main>
+        <header class="p-5 bg-danger text-center">
+          <%- include ("partials/menu.ejs")%>
+        </header>
+
+			<form action="/compAdd" method="POST">
+				
+	      Name: <input type="text" name="name"><br>
+				Aliases (one per line): <textarea name="aliases"></textarea><br>
+				Short Summary: <textarea name="deck"></textarea><br>
+					
+	      Description: <textarea name="description"></textarea><br>
+				Date Founded: <input type="date" name="foundDate"><br>
+				Address: <input type="text" name="address"><br>
+				City: <input type="text" name="city"><br>
+				Country: 
+				<select name="country" id="country">
+					<!--Get data from API-->
+					<option value=null selected>Select Country</option>
+					<% for(let i = 0; i <data.length;i++) {%>
+						<option value=<%=data[i].name%>><%=data[i].name%></option>
+					<%}%>
+				</select>
+							
+				State: 
+				<input type="text" name="state"><br>
+				Image: <input type="text" name="image"><br>
+				
+				Website:<textarea name="website"></textarea><br>
+	    	<button> Add New Company </button>
+    
+			</form>
+    </main>						
+</body>
+</html>

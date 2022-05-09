@@ -20,6 +20,12 @@ app.get('/', async (req, res) => {
     //  // data = await fetchData(url);
     //  // console.log(data.results[0]);
     // console.log(url);
+
+	 // 	loadFranchiseDatabase();
+		// loadGameDatabase();
+		// loadCompanyDatabase();
+		// loadPeopleDatabase();
+	
    res.render('home');
 });
 app.get('/cSearch',(req,res)=>{
@@ -42,12 +48,12 @@ app.get('/cResults', async (req, res) => {
     let url = `https://www.giantbomb.com/api/search/?api_key=${key}&format=JSON&query=${characterLink}&resources=character&field_list=name,image,guid&limit=100`;
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
     
     let imageArr = [];
     let nameArr = [];
     let charNum = data.results.length;
-    let charId=[]
+    let charId=[];
     
     for(let i = 0; i < data.results.length;i++){
         imageArr[i] = data.results[i].image.medium_url;
@@ -67,7 +73,7 @@ app.get('/gResults', async (req, res) => {
     let url = `https://www.giantbomb.com/api/search/?api_key=${key}&format=JSON&query=${gameLink}&resources=game&field_list=name,image,guid&limit=100`;
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
     console.log(data.results[0]);
     
     let imageArr = [];
@@ -94,7 +100,7 @@ app.get('/compResults', async (req, res) => {
      let url = `https://www.giantbomb.com/api/search/?api_key=${key}&format=JSON&query=${company}&resources=company&field_list=name,image,guid&limit=100`;
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
     
     let imageArr = [];
     let nameArr = [];
@@ -118,7 +124,7 @@ app.get('/fResults', async (req, res) => {
      let url = `https://www.giantbomb.com/api/search/?api_key=${key}&format=JSON&query=${franchise}&resources=franchise&field_list=name,image,guid&limit=100`;
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
     
     let imageArr = [];
     let nameArr = [];
@@ -141,7 +147,7 @@ app.get("/character", async function(req, res){
     // console.log(guid)
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
 
     console.log(data.results.description);
     res.render('character',{"data":data});
@@ -154,16 +160,18 @@ app.get("/franchise", async function(req, res){
     // console.log(guid)
     console.log(url);
     let response = await fetch(url);
-    let data     = await response.json();
+    let data = await response.json();
     res.render('franchise',{"data":data});
 });
+
 app.get("/company", async function(req, res){
     guid = req.query.company
     console.log(guid)
     let url =`https://www.giantbomb.com/api/company/${guid}/?api_key=${key}&format=JSON`
     // console.log(guid)
     console.log(url);
-    
+    let response = await fetch(url);
+    let data     = await response.json();
     res.render('company',{"data":data});
 });
 
@@ -180,27 +188,33 @@ app.get("/game", async function(req, res){
     res.render('game',{"data":data, "num":num});
 });
 
-app.post('/newGame', async (req,res)=>{
-    rating = req.body.gameRate;
-  
-    console.log(rating)
-    let url =`https://www.giantbomb.com/api/game/${guid}/?api_key=${key}&format=JSON`
+app.get("/newGame", async function(req, res){
+    res.render('newGame');
+});
+app.get("/newPerson", async function(req, res){
+    res.render('newPerson');
+});
+app.get("/newFranchise", async function(req, res){
+    res.render('newFranchise');
+});
+app.get("/newCompany", async function(req, res){
+	  let url = "https://countriesnow.space/api/v0.1/countries/states";
+		let data = await fetchData(url);
+		//console.log(data);
+		res.render('newCompany',{"data":data.data});
+});
+
+app.post('/gAdd', async (req,res)=>{
     // console.log(guid)
-    console.log(url);
-    let response = await fetch(url);
-    let data     = await response.json();
-    let deck = data.results.deck;
-    let description = data.results.description;
-    let originalRelease = data.results.original_release_date;
-    let name = data.results.name;
-    let aliases = data.results.aliases;
-    let image = data.results.image.original_url;
-    let platLen = data.results.platforms.length;
-   
-    let platforms = [];
-    for(let i = 0; i < platLen; i++){
-        platforms[i]=data.results.platforms[i].name;
-    }
+    let deck = req.body.deck;
+    let description = req.body.description;
+    let originalRelease = req.body.original_release_date;
+    let name = req.body.name;
+    let aliases = req.body.aliases;
+    let image = req.body.image;
+		let platforms=req.body.platform;
+		let rating = req.body.rating;
+  	 
   // var myJsonString = JSON.stringify(yourArray);
     let platJson = JSON.stringify(platforms)
     let sqlInput = `INSERT INTO g_games
@@ -209,8 +223,63 @@ app.post('/newGame', async (req,res)=>{
                     (?,?,?,?,?,?,?,?)`
     let params = [originalRelease, deck, description, image, name, aliases, platJson,rating];
     executeSQL(sqlInput,params);
-    res.render('gSearch')
+    res.render('home')
 })
+
+app.post('/cAdd', async (req,res)=>{
+		let deck = req.body.deck;
+    let description = req.body.description;
+    let birthday = req.body.birthday;
+    let name = req.body.name;
+    let image = req.body.image;
+		let firstGame = req.body.firstGame;
+		let gender = req.body.gender;
+	
+		let sqlInput = `INSERT INTO g_people
+                    (birthday, deck, description, image, name,firstCreditedGame,gender)
+                    VALUES
+                    (?,?,?,?,?,?,?)`;
+    let params = [birthday, deck, description, image, name,firstGame,gender];
+    executeSQL(sqlInput,params);
+    res.render('home');
+})
+app.post('/fAdd', async (req,res)=>{
+		description = req.body.description;
+		deck = req.body.deck;
+		name = req.body.name;
+		aliases = req.body.aliases;
+		image = req.body.image;
+		let sqlInput = `INSERT INTO g_franchises
+      (deck, description, aliases, image, name)
+      VALUES
+      (?, ?, ?, ?, ?)`
+		let params = [deck, description, aliases, image, name];
+		executeSQL(sqlInput,params);
+    res.render('home');
+})
+
+app.post('/compAdd', async (req,res)=>{
+		let dateFounded = req.body.foundDate;
+		let description = req.body.description;
+		let deck = req.body.deck;
+		let name = req.body.name;
+		let aliases = req.body.aliases;
+		let image = req.body.image;
+		let address = req.body.address;
+		let city = req.body.city;
+		let country = req.body.country;
+		let state = req.body.state;
+		let website = req.body.website;
+					
+		let sqlInput = `INSERT INTO g_companies
+      (dateFounded, deck, description, aliases, image, name, address, city, country, state, website)
+      VALUES
+      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			let params = [dateFounded, deck, description, aliases, image, name, address, city, country, state, website];
+			executeSQL(sqlInput,params);
+    res.render('home');
+})
+
 app.post('/newFranchise', async (req,res)=>{
     console.log(guid)
     let url =`https://www.giantbomb.com/api/franchise/${guid}/?api_key=${key}&format=JSON`
@@ -308,7 +377,163 @@ async function fetchData(url){
     return data;
 }
 
- //values in red must be updated
+
+async function loadPeopleDatabase(){  
+	let offset =0;
+	//1904
+	for(let j =0; j<5; j++){
+	    let url = `https://www.giantbomb.com/api/people/?api_key=${key}&format=JSON&resources=person&limit=100&offset=${offset}`;
+		console.log(url)
+	    let response = await fetch(url);
+	    let data = await response.json();
+			let birthday;
+    	let deck;
+    	let description;
+    	let firstApp;
+    	let name;
+    	let image;
+    	let gender;
+	    for(let i = 0; i < data.results.length;i++){
+	        birthday = data.results[i].birth_date;
+					description = data.results[i].description;
+					deck = data.results[i].deck;
+					name = data.results[i].name;
+					gender = data.results[i].gender;
+					firstApp=data.results[i].first_appeared_in_game
+					image = data.results[i].image.original_url
+
+
+					let sqlInput = `INSERT INTO g_people
+                    (birthday, deck, description, firstCreditedGame, gender, image, name)
+                    VALUES
+                    (?,?,?,?,?,?,?)`
+			    let params = [birthday,deck,description,firstApp, gender,image,name];
+			    executeSQL(sqlInput,params);
+				await sleep(1000);
+	    }
+		offset+=100;
+		await sleep(1000);
+	}	
+}
+
+async function loadGameDatabase(){  
+	let offset =0;
+	//803
+	for(let j =0; j<5; j++){
+	    let url = `https://www.giantbomb.com/api/games/?api_key=${key}&format=JSON&resources=person&limit=100&offset=${offset}`;
+		console.log(url)
+	    let response = await fetch(url);
+	    let data = await response.json();
+			let releaseDate;
+    	let deck;
+    	let description;
+    	let aliases;
+    	let name;
+    	let image;
+    	let platform;
+			let rating;
+	    for(let i = 0; i < data.results.length;i++){
+	        releaseDate = data.results[i].original_release_date;
+					description = data.results[i].description;
+					deck = data.results[i].deck;
+					name = data.results[i].name;
+					aliases = data.results[i].aliases;
+					platform = data.results[i].platform;
+					image = data.results[i].image.original_url;
+					rating = data.results[i].rating;
+					let sqlInput = `INSERT INTO g_games
+                    (releaseDate, deck, description, aliases, platform, image, name,rating)
+                    VALUES
+                    (?,?,?,?,?,?,?,?)`
+			    let params = [releaseDate, deck, description, aliases, platform, image, name, rating];
+			    executeSQL(sqlInput,params);
+				await sleep(1000);
+	    }
+		offset+=100;
+		await sleep(1000);
+	}	
+}
+
+async function loadCompanyDatabase(){ 
+	let offset =0;
+	//224
+	for(let j =0; j<5; j++){
+	    let url = `https://www.giantbomb.com/api/companies/?api_key=${key}&format=JSON&resources=person&limit=100&offset=${offset}`;
+		console.log(url)
+	    let response = await fetch(url);
+	    let data = await response.json();
+			let dateFounded;
+    	let deck;
+    	let description;
+    	let aliases;
+    	let name;
+    	let image;
+    	let address;
+			let city;
+			let country;
+			let state;
+			let website;
+		
+	    for(let i = 0; i < data.results.length;i++){
+	        dateFounded = data.results[i].date_Founded;
+					description = data.results[i].description;
+					deck = data.results[i].deck;
+					name = data.results[i].name;
+					aliases = data.results[i].aliases;
+					image = data.results[i].image.original_url;
+					address = data.results[i].location_address;
+					city = data.results[i].location_city;
+				  country = data.results[i].location_country;
+					state = data.results[i].location_state;
+					website = data.results[i].website;
+					
+					let sqlInput = `INSERT INTO g_companies
+                    (dateFounded, deck, description, aliases, image, name, address, city, country, state, website)
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			    let params = [dateFounded, deck, description, aliases, image, name, address, city, country, state, website];
+			    executeSQL(sqlInput,params);
+				await sleep(1000);
+	    }
+		offset+=100;
+		await sleep(1000);
+	}	
+}
+
+async function loadFranchiseDatabase(){
+	//52
+	let offset=0;
+	for(let j =0; j<5; j++){
+	    let url = `https://www.giantbomb.com/api/franchises/?api_key=${key}&format=JSON&resources=person&limit=100&offset=${offset}`;
+		console.log(url)
+	    let response = await fetch(url);
+	    let data = await response.json();
+    	let deck;
+    	let description;
+    	let aliases;
+    	let name;
+    	let image;
+	    for(let i = 0; i < data.results.length;i++){
+					description = data.results[i].description;
+					deck = data.results[i].deck;
+					name = data.results[i].name;
+					aliases = data.results[i].aliases;
+					image = data.results[i].image.original_url;
+					
+					let sqlInput = `INSERT INTO g_franchises
+                    (deck, description, aliases, image, name)
+                    VALUES
+                    (?, ?, ?, ?, ?)`
+			    let params = [deck, description, aliases, image, name];
+			    executeSQL(sqlInput,params);
+				await sleep(1000);
+	    }
+		offset+=100;
+		await sleep(1000);
+	}	
+}
+
+//values in red must be updated
 function dbConnection(){
 
     const pool  = mysql.createPool({
@@ -318,7 +543,6 @@ function dbConnection(){
        user: process.env['dbUser'],
        password: process.env['dbPassword'],
        database: process.env['db']
-
     }); 
 
     return pool;
@@ -327,3 +551,7 @@ function dbConnection(){
 app.listen(3000, () => {
 console.log("Expresss server running...")
 } )
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

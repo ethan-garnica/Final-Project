@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <%- include ("partials/header.ejs")%>
+</head>
+<body>
+    <main>
+        <header class="p-5 bg-danger text-center">
+          <%- include ("partials/menu.ejs")%>
+        </header>
+
+			<form action="/cAdd" method="POST">
+				
+	      Name: <input type="text" name="name"><br>
+				Short Summary: <textarea name="deck"></textarea><br>
+					
+	      Description: <textarea name="description"></textarea><br>
+				Birthday: <input type="date" name="birthday"><br>
+				First Credited Game: <input type="text" name="firstGame"><br>
+				Image: <input type="text" name="image"><br><br>
+				
+				<br>
+				Gender:
+				<select name="gender">
+					<option value=null selected>Select Gender</option>
+					<option value=0>Male</option>
+					<option value=1>Female</option>
+					<option value=2>Other</option>
+				</select>
+	    	<button> Add New Game </button>
+    
+			</form>
+    </main>
+</body>
+</html>
